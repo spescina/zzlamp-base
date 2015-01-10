@@ -18,9 +18,9 @@ hostname        = "zzfoundation"
 #   172.16.0.1  - 172.31.255.254
 #   192.168.0.1 - 192.168.255.254
 server_ip             = "192.168.1.111"
-server_cpus           = "2"   # Cores
-server_memory         = "1024" # MB
-server_swap           = "1024" # Options: false | int (MB) - Guideline: Between one or two times the server_memory
+server_cpus           = "1"   # Cores
+server_memory         = "384" # MB
+server_swap           = "512" # Options: false | int (MB) - Guideline: Between one or two times the server_memory
 
 # UTC        for Universal Coordinated Time
 # EST        for Eastern Standard Time
@@ -98,10 +98,6 @@ Vagrant.configure("2") do |config|
 
   # Create a static IP
   config.vm.network :public_network, ip: server_ip
-  
-  # Forward ports
-  config.vm.network :forwarded_port, guest: 80, host: 8080
-  config.vm.network :forwarded_port, guest: 8000, host: 8000
 
   # Use NFS for the shared folder
   # config.vm.synced_folder ".", "/vagrant",
@@ -176,22 +172,22 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Provision Base Packages
-  #config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone]
+  config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone]
 
   # optimize base box
-  #config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true
+  config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true
 
   # Provision PHP
-  #config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version]
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version]
 
   # Enable MSSQL for PHP
   # config.vm.provision "shell", path: "#{github_url}/scripts/mssql.sh"
 
   # Provision Vim
-  #config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url
+  config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url
 
   # Provision Docker
-  #config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh"
 
 
   ####
@@ -199,7 +195,7 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Provision Apache Base
-  #config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
+  config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
 
   # Provision Nginx Base
   # config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
@@ -210,13 +206,13 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Provision MySQL
-  #config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote]
+  config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote]
 
   # Provision PostgreSQL
   # config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password
 
   # Provision SQLite
-  #config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh"
 
   # Provision RethinkDB
   # config.vm.provision "shell", path: "#{github_url}/scripts/rethinkdb.sh", args: pgsql_root_password
@@ -289,17 +285,17 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Install Nodejs
-  #config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url)
+  config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url)
 
   # Install Ruby Version Manager (RVM)
-  #config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version)
+  config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version)
 
   ####
   # Frameworks and Tooling
   ##########
 
   # Provision Composer
-  #config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
+  config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
 
   # Provision Laravel
   # config.vm.provision "shell", path: "#{github_url}/scripts/laravel.sh", privileged: false, args: [server_ip, laravel_root_folder, public_folder, laravel_version]
@@ -311,7 +307,7 @@ Vagrant.configure("2") do |config|
   # config.vm.provision "shell", path: "#{github_url}/scripts/screen.sh"
 
   # Install Mailcatcher
-  #config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh"
 
   # Install git-ftp
   # config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false
@@ -325,8 +321,8 @@ Vagrant.configure("2") do |config|
   # Any local scripts you may want to run post-provisioning.
   # Add these to the same directory as the Vagrantfile.
   ##########
-  #config.vm.provision "shell", path: "./scripts/ajenti.sh"
-  #config.vm.provision "shell", path: "./scripts/vhost.sh", args: server_ip
+  config.vm.provision "shell", path: "./scripts/ajenti.sh"
+  config.vm.provision "shell", path: "./scripts/vhost.sh", args: server_ip
   config.vm.provision "shell", path: "./scripts/mysql.sh"
   
   # Restart the mysql server when all folders are mounted
